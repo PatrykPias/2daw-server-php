@@ -1,4 +1,4 @@
-<HTML> <HEAD><TITLE> EJ1A-Ejercicios Arrays Unidimensionales </TITLE></HEAD> 
+<HTML> <HEAD><TITLE> EJ2A-Ejercicios Arrays Unidimensionales </TITLE></HEAD> 
  
 <BODY> 
  
