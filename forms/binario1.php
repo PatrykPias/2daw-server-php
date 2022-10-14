@@ -7,7 +7,7 @@
 <body>
 
     <h1>Conversor Binario</h1>
-    <form name="binario" action="<?php $_SERVER["PHP_SELF"];?>" method="post">
+    <form name="binario" action="<?php echo $_SERVER["PHP_SELF"];?>" method="post">
         
         <label for="numerodec">Numero Decimal:</label>
         <input type="text" name="numerodec">
