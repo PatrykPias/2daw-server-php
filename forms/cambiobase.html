@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Coversor Base</title>
+</head>
+<body>
+
+    <h1>Conversor Numerico</h1>
+    <form name="conversor" action="cambiobase.php" method="post">
+        
+        <label for="numerodec">Numero Decimal:</label>
+        <input type="text" name="numerodec">
+        <br>
+        <br>
+        <br>
+        <fieldset style="border: 0;">
+            <label for="convert">Convertir a :</label>
+            <br>
+            <input type="radio" name="operacion" value="binario"><laber for="binario">Binario</label><br>
+            <input type="radio" name="operacion" value="octal"><label for="octal">Octal</label><br>
+            <input type="radio" name="operacion" value="hexa"><label for="hexa">Hexadecimal</label><br>
+            <input type="radio" name="operacion" value="all"><label for="all">Todos sistemas</label><br>
+        </fieldset>
+        <br>
+        <input type="submit" value="enviar">
+        <input type="reset" value="borrar">
+    </form>
+
+    
+</body>
+</html>
