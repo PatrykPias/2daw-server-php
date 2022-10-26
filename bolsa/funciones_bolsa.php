@@ -57,8 +57,7 @@ function valores($fichero,$emp,$tipo){ //leemos la columna que le pasamos
 
 }
 
-function select($fichero){
-
+function select($fichero){      //Creamos la funcion para que nos cree el select de empresas
     $fichero1 = file($fichero);
     $cont = 0;
     foreach ($fichero1 as $value ) {
@@ -67,8 +66,37 @@ function select($fichero){
         echo "<option value=$valor>$valor</option>";
         }
     }
+}
 
-
+function total($fichero,$tipo){ 
+    $fichero1 = file($fichero);
+    $res = "0";
+    $cont = 0;
+            switch ($tipo) {
+                case 'totvol':
+                    foreach ($fichero1 as $value ) {
+                        if($cont == 0)$cont++;
+                            else{
+                                $res1 = substr($value,78, 92-79);
+                                $res1 = (int)str_replace('.', '', $res1);
+                                $res = $res+$res1;
+                            }
+                    }
+                    break;
+                case 'totcap':
+                    foreach ($fichero1 as $value ) {
+                        if($cont == 0)$cont++;
+                        else{
+                            $res1 = substr($value,91, 101-92);
+                            $res1 = (int)str_replace('.', '', $res1);
+                                $res = $res+$res1;
+                        }
+                    }
+                    break;
+            
+        
+    }
+    return $res;
 }
 
 ?>
