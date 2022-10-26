@@ -3,7 +3,7 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Bolsa2</title>
+    <title>Bolsa</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
 </head>
@@ -15,6 +15,15 @@
 
         <label for = "Valores">Valores</label>
         <select name="valores">
+        <?php
+        
+    require "funciones_bolsa.php";
+
+    $fichero = "ibex35.txt";
+
+    select($fichero);
+
+        ?>
 
         </select>
         <br>

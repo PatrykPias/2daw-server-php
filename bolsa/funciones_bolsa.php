@@ -30,13 +30,13 @@ function valores($fichero,$emp,$tipo){ //leemos la columna que le pasamos
                     $res = substr($value,24-1, 34-25);
                     break;
                 case 'var':
-                    $res = substr($value,33, 41-34);
+                    $res = substr($value,32, 41-34);
                     break;
                 case 'var1':
-                    $res = substr($value,41,49-41 );
+                    $res = substr($value,40,49-41);
                     break;
                 case 'ac':
-                    $res = substr($value,49, 61-49);
+                    $res = substr($value,48, 61-49);
                     break;
                 case 'max':
                     $res = substr($value,60, 70-61);
@@ -45,10 +45,10 @@ function valores($fichero,$emp,$tipo){ //leemos la columna que le pasamos
                     $res = substr($value,69, 79-70);
                     break;
                 case 'vol':
-                    $res = substr($value,79, 92-79);
+                    $res = substr($value,78, 92-79);
                     break;
                 case 'capi':
-                    $res = substr($value,92, 101-92);
+                    $res = substr($value,91, 101-92);
                     break;
             }
         }
