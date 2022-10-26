@@ -14,7 +14,9 @@
         <h2>Consulta Operaciones Bolsa</h2>
 
         <label for = "Valores">Valores</label>
-        <input type="text" name="valores">
+        <select name="valores">
+
+        </select>
         <br>
         <br>
 
@@ -28,14 +30,20 @@
     if(isset($_POST["submit"]))
 	{
 
-        require "funciones_bolsa.php";
 
-        $fichero = "ibex35.txt";
 
 
         $empresa = $_POST["valores"];
 
-        valores($fichero,$empresa);
+        $con = valores($fichero,$empresa,"ulti");
+        $max = valores($fichero,$empresa,"max");
+        $min = valores($fichero,$empresa,"min");
+
+
+        echo "<br>";
+        echo "El valor <strong>Cotizacion</strong> de $empresa es ".$con."<br>";
+        echo "<strong>Cotizacion Maxima</strong> de $empresa es ".$max."<br>";
+        echo "<strong>Cotizacion Minima</strong> de $empresa es ".$min."<br>";
 
 
     }
