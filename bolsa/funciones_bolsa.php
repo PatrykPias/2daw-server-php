@@ -60,10 +60,12 @@ function valores($fichero,$emp,$tipo){ //leemos la columna que le pasamos
 function select($fichero){
 
     $fichero1 = file($fichero);
-
+    $cont = 0;
     foreach ($fichero1 as $value ) {
-        $valor = substr($value,0, 24-1);
+        if($cont == 0)$cont++;
+        else{$valor = substr($value,0, 24-1);
         echo "<option value=$valor>$valor</option>";
+        }
     }
 
 
