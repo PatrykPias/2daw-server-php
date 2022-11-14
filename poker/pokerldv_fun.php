@@ -260,37 +260,59 @@ function parej($arrcart , $arrgan){
 
 function ganador($arr ,$bote){
 
-    print_r($arr);
+    //print_r($arr);
 
     echo "<br>";
     $contpoker = 0;
     $conttrio = 0;
     $contdoble = 0;
     $contparej = 0;
-
+    $ganadores=array();
+    $ganador=null;
     foreach ($arr as $key => $value) {
         if ($value == "poker") {
+            $ganador="poker";
+            array_push($ganadores,$key);
             $contpoker++;
         }
-        if ($value == "trio") {
+        else if ($ganador!="poker" && $value == "trio") {
+            $ganador="trio";
+            array_push($ganadores,$key);
             $conttrio++;
         }
-        if ($value == "doble pareja") {
+        else if ($ganador!="poker" && $ganador!="trio" && $value == "doble pareja") {
+            $ganador="doble pareja";
+            array_push($ganadores,$key);
             $contdoble++;
         }
-        if ($value == "pareja") {
+        else if ($ganador!="poker" && $ganador!="trio" && $ganador!="doble pareja" && $value == "pareja") {
+            $ganador="pareja";
+            array_push($ganadores,$key);
             $contparej++;
         }
-
     }
+    //var_dump($ganadores);
+
     if ($contpoker > 0) {
-        $bote = $bote/$contpoker;
-    }elseif ($contpoker == 0 && $conttrio > 0) {
-        $bote = $bote*0.7/$conttrio;
+        $bote1 = $bote/$contpoker;
+    }elseif ($conttrio > 0) {
+        $bote2 = $bote*0.7/$conttrio;
+    }elseif ($contdoble > 0) {
+        $bote3 = $bote*0.5/$contdoble;
     }
-
     
-
+    echo "<br>";
+    for ($i=0; $i < count($ganadores); $i++) { 
+        if($ganador == "poker"){
+            echo "El jugador ".$ganadores[$i]." gana con -Poker- un bote de ".$bote1."€<br>";
+        }elseif($ganador == "trio"){
+            echo "El jugador ".$ganadores[$i]." gana con -Trio- un bote de ".$bote2."€<br>";
+        }elseif($ganador == "doble pareja"){
+            echo "El jugador ".$ganadores[$i]." gana con -Doble Pareja- un bote de ".$bote3."€<br>";
+         }elseif($ganador == "pareja"){
+            echo "El jugador ".$ganadores[$i]." gana con -Pareja- un bote de 0€ <br>";
+         }
+    }
 
 
 }
