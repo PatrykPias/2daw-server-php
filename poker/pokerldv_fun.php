@@ -304,15 +304,14 @@ function ganador($arr ,$bote){
     echo "<br>";
     for ($i=0; $i < count($ganadores); $i++) { 
         if($ganador == "poker"){
-            echo "El jugador ".$ganadores[$i]." gana con -Poker- un bote de ".$bote1."€<br>";
+            echo "El jugador ".$ganadores[$i]." gana con -Poker- un bote de ".$bote1." €<br>";
         }elseif($ganador == "trio"){
-            echo "El jugador ".$ganadores[$i]." gana con -Trio- un bote de ".$bote2."€<br>";
+            echo "El jugador ".$ganadores[$i]." gana con -Trio- un bote de ".$bote2." €<br>";
         }elseif($ganador == "doble pareja"){
-            echo "El jugador ".$ganadores[$i]." gana con -Doble Pareja- un bote de ".$bote3."€<br>";
-         }elseif($ganador == "pareja"){
-            echo "El jugador ".$ganadores[$i]." gana con -Pareja- un bote de 0€ <br>";
+            echo "El jugador ".$ganadores[$i]." gana con -Doble Pareja- un bote de ".$bote3." €<br>";
          }
     }
+    if ($ganador == "pareja") echo "No hay ganadores";
 
 
 }
