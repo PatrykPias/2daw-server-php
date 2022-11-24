@@ -156,16 +156,23 @@ function update_dpto_act($dni, $cod_dpto, $fecha_fin, $conn){
         }
 }
 function salario_act($dni){
-    $conn = connect();
+    try {
+        $conn = connect();
 
-    $sth = $conn->prepare("SELECT * FROM emple WHERE DNI=:dni ;");
-    $sth->bindParam(':dni', $dni);
-    $sth->execute();
+        $sth = $conn->prepare("SELECT * FROM emple WHERE DNI=:dni ;");
+        $sth->bindParam(':dni', $dni);
+        $sth->execute();
 
-    $salario = $sth->fetchAll(PDO::FETCH_COLUMN, 2);
-    $salario1 = $salario[0];
+        $salario = $sth->fetchAll(PDO::FETCH_COLUMN, 2);
+        $salario1 = $salario[0];
 
-    echo " <br>El salaro actual es : $salario1 €";
+        echo " <br>El salaro actual es : $salario1 €";
+        
+    }catch(PDOException $e)
+    {
+        echo "Error: " . $e->getMessage();
+    }
+    
 
 }
 
