@@ -11,7 +11,7 @@
     <?php
         require "compras_fun.php";
         $conn = connect();
-        $res = select($conn, "cliente");
+        $res = select("cliente",$conn);
         mostrarselectpos0($res, "cliente");
     ?>
     <br><br>

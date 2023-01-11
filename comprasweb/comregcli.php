@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>REGISTRO USUARIO</title>
+</head>
+<body>
+    <H2>REGISTRO USUARIO</H2>
+    <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
+    <label for="nif">NIF</label>
+    <input type="text" name="nif">
+    <br>
+    <label for="nombre">Nombre</label>
+    <input type="text" name="nombre">
+    <br>
+    <label for="Apellido">Apellido</label>
+    <input type="text" name="apellido">
+    <br>
+    <label for="cp">Codigo Postal</label>
+    <input type="number" name="cp">
+    <br>
+    <label for="Direccion">Direccion</label>
+    <input type="text" name="direccion">
+    <br>
+    <label for="ciudad">Ciudad</label>
+    <input type="text" name="ciudad">
+    <br>
+    <br><br>
+    <input type="submit" name="insert" value="Dar de alta">
+    </form>
+
+</body>
+</html>
+
+<?php 
+    require "compras_fun.php";
+
+    if (isset($_POST["insert"])) {
+
+        $nif = test_input($_POST["nif"]);
+        $nombre = test_input($_POST["nombre"]);
+        $apellido = test_input($_POST["apellido"]);
+        $cp = test_input($_POST["cp"]);
+        $dir = test_input($_POST["direccion"]);
+        $ciudad = test_input($_POST["ciudad"]);
+
+        $conn = connect();
+
+        if ($nif == "") {
+            echo "<br>El nif no puede estar vacio";
+        }else{
+            if(strlen($nif) != 9){
+                echo "El nif tiene que tener una longitud minima de 8 caracteres";
+            }else{
+                
+                register_user($nif,$nombre,$apellido,$cp,$dir,$ciudad,$conn);
+                
+            }
+        }
+
+                
+    }
+
+?>

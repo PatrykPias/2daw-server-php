@@ -11,7 +11,7 @@
     <?php
         require "compras_fun.php";
         $conn = connect();
-        $res = select($conn, "producto");
+        $res = select("producto" , $conn);
         mostrarselect($res, "producto");
     ?>
     <br><br>

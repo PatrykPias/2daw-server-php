@@ -62,16 +62,17 @@ function alta_alm($loc, $conn){ #recibe la conexion y la localidad e inserta en 
 
 function consulta_stock($id, $conn){    #recibe id del producto seleccionado y la conexion a la BD y devuelve el stock disponible de dicho producto en cada uno de los almacenes
     try{
-        $stmt = $conn->prepare("SELECT * FROM almacena WHERE ID_PRODUCTO=:id");
+        $stmt = $conn->prepare("SELECT * FROM almacena , almacen WHERE almacena.num_almacen = almacen.num_almacen AND ID_PRODUCTO=:id ");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_NUM);
+        // echo "Producto : $id <br>";
         foreach($result as $key => $value){
-            $almacen = $value[0];
+            $almacen = $value[4];
             $stock = $value[2];
+            echo "Almacen: $almacen - Stock disponible: $stock <br>";
         }
-
-        echo "$almacen - Stock disponible: $stock";
+        
     }
     catch(PDOException $e)
     {
@@ -81,8 +82,7 @@ function consulta_stock($id, $conn){    #recibe id del producto seleccionado y l
 
 function consulta_compra($nif, $desde, $hasta, $conn){
     try{
-        $stmt = $conn->prepare("SELECT producto.NOMBRE, producto.ID_PRODUCTO, producto.PRECIO, compra.UNIDADES FROM producto, compra 
-        WHERE compra.ID_PRODUCTO=producto.ID_PRODUCTO AND compra.FECHA_COMPRA<:hasta AND compra.FECHA_COMPRA>:desde AND compra.NIF=:nif");
+        $stmt = $conn->prepare("SELECT producto.NOMBRE, producto.ID_PRODUCTO, producto.PRECIO, compra.UNIDADES FROM producto, compra WHERE compra.ID_PRODUCTO=producto.ID_PRODUCTO AND compra.FECHA_COMPRA<:hasta AND compra.FECHA_COMPRA>:desde AND compra.NIF=:nif");
         $stmt->bindParam(':nif', $nif);
         $stmt->bindParam(':desde', $desde);
         $stmt->bindParam(':hasta', $hasta);
@@ -104,6 +104,46 @@ function consulta_compra($nif, $desde, $hasta, $conn){
     }
 
 
+}
+
+function compra_prod($prod, $cant, $conn){
+    try{
+        $stmt = $conn->prepare("SELECT * FROM ALMACENA WHERE ID_PRODUCTO = :prod");
+        $stmt->bindParam(':prod', $prod);
+        $stmt->execute();
+
+        $stock = $stmt->fetchAll(\PDO::FETCH_NUM);
+        var_dump($stock);
+        $sum = 0;
+        foreach($stock as $key => $value){
+            $unid = $value[2];
+            $sum += $unid;
+        }
+
+        // if ($sum > $cant) {
+        //     $i = 0;
+        //     while ($cant == 0) {
+        //         $num = $stock[$i][2];
+        //         if ($num == 0){
+        //             $i++;
+        //         }else {
+        //             $cant = $cant - $num;
+        //             echo"$cant";
+        //             $i++;
+        //         }
+                
+        //     }
+
+        // }else {
+        //     echo "Stock insuficiente";
+        // }
+
+
+    }
+    catch(PDOException $e)
+    {
+        echo "Error: " . $e->getMessage();
+    }
 }
 
 //  <!---------------- Patryk ----------------!>
@@ -167,15 +207,45 @@ function mostrarselectpos0($result,$name = ""){
 }
 function aprpro($id,$almacen,$cantidad,$conn){
     try {
+        
+        $stmt = $conn->prepare("SELECT * FROM almacena where id_producto=:id && num_almacen = :almacen");
 
-        $stmt = $conn->prepare("INSERT INTO almacena (ID_PRODUCTO, NUM_ALMACEN,CANTIDAD) VALUES (:id_prod,:alma,:cant)");
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':almacen', $almacen);
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(\PDO::FETCH_NUM);
+
+        $cont = count($result);
+
+        foreach ($result as $key => $value) {
+            $sum = $value[2];
+        }
+
+
+        if ($cont == 1) {
+
+        $sum1 = $sum + $cantidad;
+
+        $stmt = $conn->prepare("UPDATE almacena SET cantidad = :cant where id_producto = :id_prod && num_almacen = :alma");
 
         $stmt->bindParam(':id_prod', $id);
-        $stmt->bindParam(':cant', $cantidad);
+        $stmt->bindParam(':cant', $sum1);
         $stmt->bindParam(':alma', $almacen);
 
         $stmt->execute();
             echo "Aprovisionar Productos correcta<br>";
+
+        }else{
+            $stmt = $conn->prepare("INSERT INTO almacena (ID_PRODUCTO, NUM_ALMACEN,CANTIDAD) VALUES (:id_prod,:alma,:cant)");
+
+            $stmt->bindParam(':id_prod', $id);
+            $stmt->bindParam(':cant', $cantidad);
+            $stmt->bindParam(':alma', $almacen);
+    
+            $stmt->execute();
+                echo "Aprovisionar Productos correcta<br>";
+        }
 
     } catch(PDOException $e)
     {
@@ -209,5 +279,80 @@ function almacen($alma,$conn){
 
 }
 
+// function alta_cliente($nif,$nombre,$apellido,$cp,$direccion,$ciudad,$conn){
+
+//     try {
+
+        
+        
+//     } catch (PDOException $e) {
+//         echo "Error: " . $e->getMessage();
+//     }
+
+
+// }
+
+function register_user($nif,$nombre,$apellido,$cp,$direccion,$ciudad,$conn){
+
+    $pass = strrev(strtolower($apellido));
+
+    try {
+
+        $stmt = $conn->prepare("INSERT INTO cliente (NIF,NOMBRE,APELLIDO,CONTRASEÑA,CP,DIRECCION,CIUDAD) VALUES (:nif,:nombre,:apellido,:pass,:cp,:direccion,:ciudad)");
+
+        $stmt->bindParam(':nif', $nif);
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':apellido', $apellido);
+        $stmt->bindParam(':pass', $pass);
+        $stmt->bindParam(':cp', $cp);
+        $stmt->bindParam(':direccion', $direccion);
+        $stmt->bindParam(':ciudad', $ciudad);
+        $stmt->execute();
+
+        echo "Registro correcto";
+        echo "<br> Usuario = $nombre Contraseña = $pass";
+        
+        
+    } catch (PDOException $e) {
+
+        echo "Error: " . $e->getMessage();
+
+    }
+
+}
+
+function login($user,$pass,$conn,$cookie_name){
+
+    try {
+        $stmt = $conn->prepare("SELECT * FROM cliente where nombre=:user && contraseña = :pass");
+
+        $stmt->bindParam(':user', $user);
+        $stmt->bindParam(':pass', $pass);
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(\PDO::FETCH_NUM);
+
+        foreach ($result as $key => $value) {
+            $nif = $value[0];
+        }
+
+        if (count($result)==0) {
+            echo"El usuario no existe o se ha introducido parametros incorrectos";
+        }else{
+            setcookie($cookie_name,$nif,time() + (86400 * 30), "/");
+            echo "Sesion correctamente iniciada";
+            echo "<br><br>";
+            echo "<a href='comconscom.php'>CONSULTA DE COMPRAS</a><br>";
+            echo "";
+        }
+
+    }catch (PDOException $e) {
+
+        echo "Error: " . $e->getMessage();
+
+    }
+
+
+}
 
 ?>
