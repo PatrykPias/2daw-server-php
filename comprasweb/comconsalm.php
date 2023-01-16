@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Aprovisionar Productos</title>
+    <title>Consulta de almacenes</title>
 </head>
 <body>
-    <H2>Aprovisionar Productos</H2>
+    <H2>Consulta de Almacenes</H2>
    
     <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post">
 
@@ -18,7 +18,9 @@
     echo"<br>";
     ?>
     <br>
-    <input type="submit" name="alta" value="Aprovisionar Productos">
+    <input type="submit" name="alta" value="Consultar">
+    <br><br>
+    <a href="index.php">Inicio</a>
 
     </form>
 

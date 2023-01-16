@@ -106,38 +106,44 @@ function consulta_compra($nif, $desde, $hasta, $conn){
 
 }
 
-function compra_prod($prod, $cant, $conn){
+function compra_prod($prod, $cant, $nif, $conn){
     try{
         $stmt = $conn->prepare("SELECT * FROM ALMACENA WHERE ID_PRODUCTO = :prod");
         $stmt->bindParam(':prod', $prod);
         $stmt->execute();
+        $cant2 = $cant;
 
         $stock = $stmt->fetchAll(\PDO::FETCH_NUM);
         var_dump($stock);
-        $sum = 0;
+        $fecha = date("Y-m-d");
         foreach($stock as $key => $value){
             $unid = $value[2];
-            $sum += $unid;
-        }
-
-        // if ($sum > $cant) {
-        //     $i = 0;
-        //     while ($cant == 0) {
-        //         $num = $stock[$i][2];
-        //         if ($num == 0){
-        //             $i++;
-        //         }else {
-        //             $cant = $cant - $num;
-        //             echo"$cant";
-        //             $i++;
-        //         }
+            $almacen = $value[0];
+            if($cant2 > 0){
+                if($unid >= $cant2){
+                $unid = $unid - $cant2;
+                $cant2 = 0;
+                $stmt = $conn->prepare("UPDATE ALMACENA SET CANTIDAD = :cant WHERE NUM_ALMACEN = :alma AND ID_PRODUCTO = :prod");
+                $stmt->bindParam(':alma', $almacen);
+                $stmt->bindParam(':cant', $unid);
+                $stmt->bindParam(':prod', $prod);
+                $stmt->execute();
+                $stmt = $conn->prepare("INSERT INTO COMPRA (NIF, ID_PRODUCTO, FECHA_COMPRA, UNIDADES) VALUES (:nif, :prod, :fecha, :cant)");
+                $stmt->bindParam(':nif', $nif);
+                $stmt->bindParam(':cant', $cant);
+                $stmt->bindParam(':prod', $prod);
+                $stmt->bindParam(':fecha', $fecha);
+                $stmt->execute();
                 
-        //     }
+            }else{
+                echo "Stock insuficiente";
+            }
+        }
+            
+        }
+            
 
-        // }else {
-        //     echo "Stock insuficiente";
-        // }
-
+  
 
     }
     catch(PDOException $e)
@@ -177,6 +183,7 @@ function alta_prod($nombre,$precio,$id_cat,$conn ){
         echo "Error: " . $e->getMessage();
     }
 }
+
 function select($name = "",$conn){
 
     $sth = $conn->prepare("SELECT * FROM $name");
@@ -196,6 +203,7 @@ function mostrarselect($result,$name = ""){
     echo '</select>';
 
 }
+
 function mostrarselectpos0($result,$name = ""){
 
     echo '<select name="'.$name.'">';
@@ -205,6 +213,7 @@ function mostrarselectpos0($result,$name = ""){
     echo '</select>';
 
 }
+
 function aprpro($id,$almacen,$cantidad,$conn){
     try {
         
@@ -279,18 +288,31 @@ function almacen($alma,$conn){
 
 }
 
-// function alta_cliente($nif,$nombre,$apellido,$cp,$direccion,$ciudad,$conn){
+function alta_cliente($nif,$nombre,$apellido,$cp,$direccion,$ciudad,$conn){
 
-//     try {
+    try {
 
+        $stmt = $conn->prepare("INSERT INTO cliente (NIF,NOMBRE,APELLIDO,CP,DIRECCION,CIUDAD) VALUES (:nif,:nombre,:apellido,:cp,:direccion,:ciudad)");
+
+        $stmt->bindParam(':nif', $nif);
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':apellido', $apellido);
+        $stmt->bindParam(':cp', $cp);
+        $stmt->bindParam(':direccion', $direccion);
+        $stmt->bindParam(':ciudad', $ciudad);
+        $stmt->execute();
+
+        echo "Alta Cliente correcta";
         
         
-//     } catch (PDOException $e) {
-//         echo "Error: " . $e->getMessage();
-//     }
+    } catch (PDOException $e) {
+
+        echo "Error: " . $e->getMessage();
+
+    }
 
 
-// }
+}
 
 function register_user($nif,$nombre,$apellido,$cp,$direccion,$ciudad,$conn){
 
@@ -298,7 +320,7 @@ function register_user($nif,$nombre,$apellido,$cp,$direccion,$ciudad,$conn){
 
     try {
 
-        $stmt = $conn->prepare("INSERT INTO cliente (NIF,NOMBRE,APELLIDO,CONTRASEÑA,CP,DIRECCION,CIUDAD) VALUES (:nif,:nombre,:apellido,:pass,:cp,:direccion,:ciudad)");
+        $stmt = $conn->prepare("INSERT INTO cliente (NIF,NOMBRE,APELLIDO,CONTRASENA,CP,DIRECCION,CIUDAD) VALUES (:nif,:nombre,:apellido,:pass,:cp,:direccion,:ciudad)");
 
         $stmt->bindParam(':nif', $nif);
         $stmt->bindParam(':nombre', $nombre);
@@ -310,7 +332,7 @@ function register_user($nif,$nombre,$apellido,$cp,$direccion,$ciudad,$conn){
         $stmt->execute();
 
         echo "Registro correcto";
-        echo "<br> Usuario = $nombre Contraseña = $pass";
+        echo "<br> Usuario = $nombre <br> Contraseña = $pass";
         
         
     } catch (PDOException $e) {
@@ -322,12 +344,12 @@ function register_user($nif,$nombre,$apellido,$cp,$direccion,$ciudad,$conn){
 }
 
 function login($user,$pass,$conn,$cookie_name){
-
+    $pass1 = strtolower($pass);
     try {
-        $stmt = $conn->prepare("SELECT * FROM cliente where nombre=:user && contraseña = :pass");
+        $stmt = $conn->prepare("SELECT * FROM cliente where nombre=:user && contrasena = :pass");
 
         $stmt->bindParam(':user', $user);
-        $stmt->bindParam(':pass', $pass);
+        $stmt->bindParam(':pass', $pass1);
         $stmt->execute();
 
         $result = $stmt->fetchAll(\PDO::FETCH_NUM);
@@ -338,21 +360,70 @@ function login($user,$pass,$conn,$cookie_name){
 
         if (count($result)==0) {
             echo"El usuario no existe o se ha introducido parametros incorrectos";
+            $pag = false;
         }else{
             setcookie($cookie_name,$nif,time() + (86400 * 30), "/");
             echo "Sesion correctamente iniciada";
             echo "<br><br>";
             echo "<a href='comconscom.php'>CONSULTA DE COMPRAS</a><br>";
             echo "";
+            $pag = true;
         }
+        
 
     }catch (PDOException $e) {
 
         echo "Error: " . $e->getMessage();
-
+        
     }
 
+    return $pag;
 
+}
+
+function validarNIF($nif){
+    $valido = true;
+    $letra = substr(strtoupper($nif), -1);
+    $numeros = substr($nif, 0, -1);
+    $arrletras = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M"];
+
+    if($nif == ""){
+        echo "<br>El nif no puede estar vacio";
+    }else{
+        for($i = 0; $i < count($arrletras); $i++){
+            if($letra != $arrletras[$i]){
+                $valido = false;
+            }
+            }
+            if(strlen($numeros) == 8 && is_numeric($numeros) == true){
+                $valido = true; 
+            }else{
+                echo "El nif tiene que tener una longitud de 9 caracteres: 8 números y 1 letra";
+                $valido = false;            
+        } 
+    }
+    return $valido;
+}
+
+function cesta($prod, $unid){
+    if(isset($_COOKIE["cesta"])){
+        $valor_cookie = [];
+        $valor_cookie = $_COOKIE["cesta"];
+        $unserialized = unserialize($valor_cookie);
+        array_push($unserialized, [$prod=>$unid]);
+        var_dump($unserialized);
+        $serialized = serialize($unserialized);
+        setcookie("cesta",$serialized, time() + (86400 * 30), "/");
+    }else{
+        $array = [];
+        array_push($array, [$prod=>$unid]);
+        $serialized = serialize($array);
+        setcookie("cesta", $serialized, time() + (86400 * 30), "/");
+    }
+}
+
+function compra_cesta($nif,$conn){
+    
 }
 
 ?>

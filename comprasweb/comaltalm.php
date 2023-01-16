@@ -11,6 +11,8 @@
     <input type="text" name="loc">
     <br><br>
     <input type="submit" name="insert" value="Dar de alta">
+    <br><br>
+    <a href="index.php">Inicio</a>
     </form>
 </body>
 </html>

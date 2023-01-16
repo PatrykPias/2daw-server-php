@@ -18,13 +18,15 @@
     echo"<br>";
     echo '<label for="numal">Numero Almacenes</label>';
     $res1 = select("almacen",$conn);
-    mostrarselectpos0($res1,"alma");
+    mostrarselect($res1,"alma");
     echo"<br>";
     ?>
     <label for="Cantidad">Cantidad</label>
     <input type="number" name="cantidad">
     <br>
     <input type="submit" name="alta" value="Aprovisionar Productos">
+    <br><br>
+    <a href="index.php">Inicio</a>
 
     </form>
 

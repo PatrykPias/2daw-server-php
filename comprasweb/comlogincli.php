@@ -5,9 +5,12 @@
     <title>LOGIN USUARIO</title>
 </head>
 <?php
-$cookie_name ="user";
+$cookie_nameu ="user";
 $cookie_nif = "00000000X";
-setcookie($cookie_name,$cookie_nif,time() + (86400 * 30), "/");
+setcookie($cookie_nameu,$cookie_nif,time() + (86400 * 30), "/");
+$cookie_namel ="list";
+$cookie_list = "";
+setcookie($cookie_namel,$cookie_list,time() + (86400 * 30), "/");
 ?>
 <body>
     <H2>LOGIN USUARIO</H2>
@@ -20,6 +23,8 @@ setcookie($cookie_name,$cookie_nif,time() + (86400 * 30), "/");
     <br>
     <br><br>
     <input type="submit" name="insert" value="Dar de alta">
+    <br><br>
+    <a href="index.php">Inicio</a>
     </form>
 
 </body>
@@ -35,9 +40,11 @@ setcookie($cookie_name,$cookie_nif,time() + (86400 * 30), "/");
 
         $conn = connect();
                 
-        login($user,$pass,$conn,$cookie_name);
-        
+        $pag = login($user,$pass,$conn,$cookie_name);
 
+        if ($pag == true ){
+            echo "<SCRIPT>window.location='welcome.php';</SCRIPT>";
+        }
                 
     }
 

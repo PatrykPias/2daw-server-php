@@ -27,6 +27,8 @@
     <br>
     <br><br>
     <input type="submit" name="insert" value="Dar de alta">
+    <br><br>
+    <a href="index.php">Inicio</a>
     </form>
 
 </body>
@@ -46,19 +48,12 @@
 
         $conn = connect();
 
-        if ($nif == "") {
-            echo "<br>El nif no puede estar vacio";
-        }else{
-            if(strlen($nif) != 8){
-                echo "El nif tiene que tener una longitud minima de 8 caracteres";
-            }else{
-                
-                // alta_cliente($nif,$nombre,$apellido,$cp,$dir,$ciudad,$conn);
+        $valido = validarNIF($nif);
 
-            }
+        if ($valido == true) {
+            alta_cliente($nif,$nombre,$apellido,$cp,$dir,$ciudad,$conn);
         }
 
-                
-    }
+        }
 
 ?>

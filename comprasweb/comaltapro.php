@@ -20,6 +20,8 @@
     mostrarselect($res,"categoria");
     ?>
     <input type="submit" name="alta" value="Dar de Alta Producto">
+    <br><br>
+    <a href="index.php">Inicio</a>
 
     </form>
 
