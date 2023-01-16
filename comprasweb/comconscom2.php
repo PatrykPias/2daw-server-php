@@ -35,6 +35,7 @@
         $nif = $_POST["nif"];
         $desde = test_input($_POST["desde"]);
         $hasta = test_input($_POST["hasta"]);
+        $conn = connect();
         consulta_compra($nif, $desde, $hasta, $conn);
     }
 ?>
