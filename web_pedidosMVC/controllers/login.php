@@ -5,13 +5,14 @@
 
         $result = compro($user,$pass1);
 
-        foreach ($result as $key => $value) {
-            $usr = $value[0];
-        }
+        
 
         if (count($result)==0) {
             $pag = false;
         }else{
+            foreach ($result as $key => $value) {
+            $usr = $value[0];
+            }
             $_SESSION["user"] = $usr;
             $pag = true;
         }
