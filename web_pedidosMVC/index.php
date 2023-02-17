@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <?php
-    require_once("controllers/sesion.php");
+    require_once("controllers/sesion_login.php");
 ?>
 <head>
     <meta charset="UTF-8">
