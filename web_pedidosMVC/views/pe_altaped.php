@@ -81,12 +81,12 @@
     //     }
         
             
-    if(isset($_POST["ver_cest"])){
-        $cesta = compr_cesta();
-        if($cesta){
-            ver_cesta();
-        }else{
-            echo "La cesta estsa vacia";
-        }
-    }
+    // if(isset($_POST["ver_cest"])){
+    //     $cesta = compr_cesta();
+    //     if($cesta){
+    //         ver_cesta();
+    //     }else{
+    //         echo "La cesta estsa vacia";
+    //     }
+    // }
 ?>
